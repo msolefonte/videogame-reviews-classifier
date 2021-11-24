@@ -8,14 +8,16 @@ from spacy_langdetect import LanguageDetector
 
 def load_dataset():
     data_file_path = '../data/reviews.csv'
-    data_absolute_path = os.path.join(os.path.dirname(__file__), data_file_path)
+    data_absolute_path = os.path.join(
+        os.path.dirname(__file__), data_file_path)
 
     return pd.read_csv(data_absolute_path, sep='\t', header=0)
 
 
 def remove_non_english_reviews(dataset):
     nlp = spacy.load("en_core_web_lg")
-    Language.factory("language_detector", func=lambda nlp, name: LanguageDetector())
+    Language.factory("language_detector", func=lambda nlp,
+                     name: LanguageDetector())
     nlp.add_pipe('language_detector', last=True)
 
     def english_filer(entry):
@@ -29,7 +31,8 @@ def remove_non_english_reviews(dataset):
 
 def preprocess_data():
     data_file_path = '../data/dataset.ml'
-    data_absolute_path = os.path.join(os.path.dirname(__file__), data_file_path)
+    data_absolute_path = os.path.join(
+        os.path.dirname(__file__), data_file_path)
 
     dataset = load_dataset()
     print(dataset)
@@ -39,4 +42,5 @@ def preprocess_data():
     # pickle.dump(english_dataset, data_file)
 
 
-preprocess_data()
+if __name__ == "__main__":
+    preprocess_data()
