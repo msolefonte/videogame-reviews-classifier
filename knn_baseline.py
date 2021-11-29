@@ -79,13 +79,14 @@ def run(neighbours):
     plt.savefig(f'knn_{neighbours}.jpg')
     plt.clf()
 
-    return accuracy_train, accuracy_test
+    print(accuracy_train, accuracy_test)
+    return float(accuracy_train), accuracy_test
 
 
 def main():
     neighbours = [10, 20, 30, 50, 70]
-    accuracy_train = np.zeros_like(neighbours)
-    accuracy_test = np.zeros_like(neighbours)
+    accuracy_train = [0.0]*len(neighbours)
+    accuracy_test = [0.0]*len(neighbours)
     
     for i in range(len(neighbours)):
         accuracy_train[i], accuracy_test[i] = run(
