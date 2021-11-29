@@ -3,13 +3,9 @@ import numpy as np
 from sklearn.metrics import accuracy_score, mean_absolute_error
 from sklearn.model_selection import KFold
 from sklearn.neighbors import KNeighborsClassifier
-
 import lib
 
 x, y, names = lib.get_data()
-print(x.shape)
-print(y.shape)
-print(x[0])
 folds = 5
 kf = KFold(folds)
 
@@ -52,7 +48,6 @@ def run(neighbours):
 
         mae_test = mae_test + mean_absolute_error(y_pred, y_test)
         accuracy_test = accuracy_test + accuracy_score(y_pred, y_test)
-        print(accuracy_test)
 
     accuracy_train = average(accuracy_train)
     accuracy_test = average(accuracy_test)
@@ -65,16 +60,16 @@ def run(neighbours):
 
     plt.xlabel('score')
     plt.ylabel('Number of reviews')
-
+    
     distribution = calculate_distribution(y_pred)
     bar_range = np.array(range(len(distribution)))
     plt.bar(bar_range - 0.35 / 2, distribution, width=0.35,
             label='train', tick_label=range(len(distribution)))
-
+    
     distribution = calculate_distribution(y_test)
     plt.bar(bar_range + 0.35 / 2, distribution, width=0.35,
             label='test', tick_label=range(len(distribution)))
-
+    
     plt.legend()
     plt.savefig(f'knn_{neighbours}.jpg')
     plt.clf()
