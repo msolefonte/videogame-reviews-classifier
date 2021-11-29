@@ -2,16 +2,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 from lib.loader import get_data
 from lib.utils.common import calculate_distribution
-from sklearn.naive_bayes import MultinomialNB
 from sklearn.model_selection import KFold
 from sklearn.metrics import accuracy_score, mean_absolute_error
+from sklearn.svm import LinearSVC
 
 x, y, names = get_data()
 kFold = KFold()
 
 
-def run_model(alpha, draw_plot=False):
-    model = MultinomialNB(alpha=alpha)
+def run_model(c, draw_plot=False):
+    model = LinearSVC(C=c)
 
     mean_average_error_train = 0
     mean_average_error_test = 0
@@ -28,11 +28,11 @@ def run_model(alpha, draw_plot=False):
 
         y_pred = model.predict(x_train)
         mean_average_error_train = mean_average_error_train + mean_absolute_error(y_pred, y_train)
-        accuracy_train = accuracy_train + accuracy_score(y_pred, y_train)
+        accuracy_train += accuracy_score(y_pred, y_train)
 
         y_pred = model.predict(x_test)
         mean_average_error_test = mean_average_error_test + mean_absolute_error(y_pred, y_test)
-        accuracy_test = accuracy_test + accuracy_score(y_pred, y_test)
+        accuracy_test += accuracy_score(y_pred, y_test)
 
     mean_average_error_train = mean_average_error_train / 5
     mean_accuracy_train = accuracy_train / 5
@@ -54,44 +54,39 @@ def run_model(alpha, draw_plot=False):
                 label='test', tick_label=range(len(distribution)))
 
         plt.legend()
-        plt.savefig('images/bayes_alpha=%g.jpg' % alpha)
+        plt.savefig('images/svm_c=%g.jpg' % c)
         plt.clf()
 
+    print(mean_average_error_train, mean_accuracy_train, mean_average_error_test, mean_accuracy_test)
     return mean_average_error_train, mean_accuracy_train, mean_average_error_test, mean_accuracy_test
 
 
 def main():
-    run_model(0, True)
-    run_model(0.02, True)
-    run_model(0.5, True)
-    run_model(1, True)
-    run_model(10, True)
-    run_model(100, True)
+    c_range = [0.001, 0.01, 0.1, 1, 10, 100]
 
-    alpha = np.linspace(0, 100)
-    mean_average_error_train = np.zeros_like(alpha)
-    mean_average_error_test = np.zeros_like(alpha)
-    accuracy_train = np.zeros_like(alpha)
-    accuracy_test = np.zeros_like(alpha)
+    mean_average_error_train = np.zeros_like(c_range)
+    mean_average_error_test = np.zeros_like(c_range)
+    accuracy_train = np.zeros_like(c_range)
+    accuracy_test = np.zeros_like(c_range)
 
-    for i in range(len(alpha)):
+    for i in range(len(c_range)):
         mean_average_error_train[i], accuracy_train[i], mean_average_error_test[i], accuracy_test[i] = \
-            run_model(alpha[i])
+            run_model(c_range[i], True)
 
-    plt.xlabel('alpha')
+    plt.xlabel('c')
     plt.ylabel('mean average error')
-    plt.plot(alpha, mean_average_error_train, label='train')
-    plt.plot(alpha, mean_average_error_test, label='test')
+    plt.plot(c_range, mean_average_error_train, label='train')
+    plt.plot(c_range, mean_average_error_test, label='test')
     plt.legend()
-    plt.savefig('images/bayes_alpha_vs_mean_average_error.jpg')
+    plt.savefig('images/svm_c_vs_mean_average_error.jpg')
     plt.clf()
 
-    plt.xlabel('alpha')
+    plt.xlabel('c')
     plt.ylabel('acc')
-    plt.plot(alpha, accuracy_train, label='train')
-    plt.plot(alpha, accuracy_test, label='test')
+    plt.plot(c_range, accuracy_train, label='train')
+    plt.plot(c_range, accuracy_test, label='test')
     plt.legend()
-    plt.savefig('images/bayes_alpha_vs_acc.jpg')
+    plt.savefig('images/svm_c_vs_acc.jpg')
     plt.clf()
 
 

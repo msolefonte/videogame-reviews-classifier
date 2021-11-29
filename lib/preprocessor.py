@@ -35,11 +35,10 @@ def preprocess_data():
         os.path.dirname(__file__), data_file_path)
 
     dataset = load_dataset()
-    print(dataset)
-    # english_dataset = remove_non_english_reviews(dataset)
-    #
-    # data_file = open(data_absolute_path, 'wb')
-    # pickle.dump(english_dataset, data_file)
+    english_dataset = remove_non_english_reviews(dataset)
+
+    data_file = open(data_absolute_path, 'wb')
+    pickle.dump(english_dataset, data_file)
 
 
 if __name__ == "__main__":
