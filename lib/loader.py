@@ -45,6 +45,7 @@ def get_train_test_split_data():
 
     return x_train, x_test, y_train, y_test, names
 
+
 if __name__ == "__main__":
     x, y, name = get_data()
     print(x.shape)
