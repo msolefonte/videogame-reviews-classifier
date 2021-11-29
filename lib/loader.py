@@ -36,7 +36,7 @@ def get_data():
     tfidf_transformer = TfidfTransformer()
     x_train_tfidf = tfidf_transformer.fit_transform(x_train_counts)
 
-    return x_train_tfidf.toarray(), y, vectorizer.get_feature_names_out()
+    return x_train_tfidf.toarray(), y, vectorizer.get_feature_names()
 
 
 def get_train_test_split_data():
