@@ -3,24 +3,16 @@ import numpy as np
 from sklearn.metrics import accuracy_score, mean_absolute_error
 from sklearn.model_selection import KFold
 from sklearn.neighbors import KNeighborsClassifier
-import lib
+from lib.loader import get_data
+from lib.utils.common import calculate_distribution
 
-x, y, names = lib.get_data()
+x, y, names = get_data()
 folds = 5
 kf = KFold(folds)
 
 
 def average(sum):
     return sum / folds
-
-
-def calculate_distribution(y):
-    dis = np.zeros((11), np.int)
-
-    for value in y:
-        dis[value - 1] = dis[value - 1] + 1
-
-    return dis
 
 
 def run(neighbours):
@@ -71,7 +63,7 @@ def run(neighbours):
             label='test', tick_label=range(len(distribution)))
     
     plt.legend()
-    plt.savefig(f'knn_{neighbours}.jpg')
+    plt.savefig(f'images/knn_{neighbours}.jpg')
     plt.clf()
 
     print(accuracy_train, accuracy_test)
@@ -92,7 +84,7 @@ def main():
     plt.plot(neighbours, accuracy_train, label='train')
     plt.plot(neighbours, accuracy_test, label='test')
     plt.legend()
-    plt.savefig('knn_vs_accuracy.jpg')
+    plt.savefig('images/knn_vs_accuracy.jpg')
     plt.clf()
 
 
