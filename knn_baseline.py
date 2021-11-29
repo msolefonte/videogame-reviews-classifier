@@ -18,9 +18,9 @@ def average(sum):
 def run(neighbours):
     knn_neighbours = KNeighborsClassifier(n_neighbors=neighbours)
 
-    mae_train = 0
+    mean_absolute_error_train = 0
     accuracy_train = 0
-    mae_test = 0
+    mean_absolute_error_test = 0
     accuracy_test = 0
     for train_idx, test_idx in kf.split(x):
         x_train = x[train_idx]
@@ -32,22 +32,22 @@ def run(neighbours):
 
         y_pred = knn_neighbours.predict(x_train)
         print(y_pred)
-        mae_train = mae_train + mean_absolute_error(y_pred, y_train)
+        mean_absolute_error_train = mean_absolute_error_train + mean_absolute_error(y_pred, y_train)
         accuracy_train = accuracy_train + accuracy_score(y_pred, y_train)
 
         y_pred = knn_neighbours.predict(x_test)
         print(y_pred)
 
-        mae_test = mae_test + mean_absolute_error(y_pred, y_test)
+        mean_absolute_error_test = mean_absolute_error_test + mean_absolute_error(y_pred, y_test)
         accuracy_test = accuracy_test + accuracy_score(y_pred, y_test)
 
     accuracy_train = average(accuracy_train)
     accuracy_test = average(accuracy_test)
-    mae_test= average(mae_test)
-    mae_train= average(mae_train)
+    mean_absolute_error_test= average(mean_absolute_error_test)
+    mean_absolute_error_test= average(mean_absolute_error_train)
 
     print(f'Training accuracy={accuracy_train} \n Test Accuracy={accuracy_test}')
-    print(f'Mean Square Error Training={mae_train} \n Mean Square Error Test={mae_test}')
+    print(f'Mean Square Error Training={mean_absolute_error_train} \n Mean Square Error Test={mean_absolute_error_test}')
 
 
     plt.xlabel('score')
@@ -67,7 +67,7 @@ def run(neighbours):
     plt.clf()
 
     print(accuracy_train, accuracy_test)
-    return float(accuracy_train), accuracy_test
+    return accuracy_train, accuracy_test
 
 
 def main():
