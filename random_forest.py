@@ -63,7 +63,7 @@ def run(num, draw):
             label='test', tick_label=range(len(distribution)))
 
     plt.legend()
-    plt.savefig('rf_num=%g.jpg' % num)
+    plt.savefig('images/rf_num=%g.jpg' % num)
     plt.clf()
 
     return mae_train, acc_train, mae_test, acc_test
@@ -90,7 +90,7 @@ def main():
     plt.plot(number, mae_train, label='train')
     plt.plot(number, mae_test, label='test')
     plt.legend()
-    plt.savefig('rf_num_vs_mae.jpg')
+    plt.savefig('images/rf_num_vs_mae.jpg')
     plt.clf()
 
     plt.xlabel('num of trees')
@@ -98,7 +98,7 @@ def main():
     plt.plot(number, acc_train, label='train')
     plt.plot(number, acc_test, label='test')
     plt.legend()
-    plt.savefig('rf_num_vs_acc.jpg')
+    plt.savefig('images/rf_num_vs_acc.jpg')
     plt.clf()
 
 

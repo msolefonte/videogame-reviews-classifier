@@ -63,7 +63,7 @@ def run(alpha, draw):
             label='test', tick_label=range(len(distribution)))
 
     plt.legend()
-    plt.savefig('bayes_alpha=%g.jpg' % alpha)
+    plt.savefig('images/bayes_alpha=%g.jpg' % alpha)
     plt.clf()
 
     return mae_train, acc_train, mae_test, acc_test
@@ -91,7 +91,7 @@ def main():
     plt.plot(alpha, mae_train, label='train')
     plt.plot(alpha, mae_test, label='test')
     plt.legend()
-    plt.savefig('bayes_alpha_vs_mae.jpg')
+    plt.savefig('images/bayes_alpha_vs_mae.jpg')
     plt.clf()
 
     plt.xlabel('alpha')
@@ -99,7 +99,7 @@ def main():
     plt.plot(alpha, acc_train, label='train')
     plt.plot(alpha, acc_test, label='test')
     plt.legend()
-    plt.savefig('bayes_alpha_vs_acc.jpg')
+    plt.savefig('images/bayes_alpha_vs_acc.jpg')
     plt.clf()
 
 
