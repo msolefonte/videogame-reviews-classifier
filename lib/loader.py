@@ -4,6 +4,7 @@ import os
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.model_selection import train_test_split
 
+
 def get_stop_words():
     stop_words_file_path = '../data/stop_words.txt'
     stop_words_absolute_path = os.path.join(
@@ -46,7 +47,11 @@ def get_train_test_split_data():
     return x_train, x_test, y_train, y_test, names
 
 
-if __name__ == "__main__":
+def main():
     x, y, name = get_data()
     print(x.shape)
     print(y.shape)
+
+
+if __name__ == "__main__":
+    main()
