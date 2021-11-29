@@ -5,20 +5,6 @@ from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.model_selection import train_test_split
 
 
-def get_stop_words():
-    stop_words_file_path = '../data/stop_words.txt'
-    stop_words_absolute_path = os.path.join(
-        os.path.dirname(__file__), stop_words_file_path)
-
-    stop_words = []
-
-    stop_words_file = open(stop_words_absolute_path, 'r')
-    for line in stop_words_file:
-        stop_words.append(line[:-2])
-
-    return stop_words
-
-
 def get_data():
     data_file_path = '../data/dataset.ml'
     data_absolute_path = os.path.join(
@@ -31,7 +17,7 @@ def get_data():
     y = np.array(dataset.iloc[:, 0])
 
     # TODO Stemming (?)
-    vectorizer = CountVectorizer(stop_words=get_stop_words())
+    vectorizer = CountVectorizer()
     x_train_counts = vectorizer.fit_transform(x)
 
     tfidf_transformer = TfidfTransformer()
