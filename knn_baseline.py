@@ -96,6 +96,7 @@ def main():
     for i in range(len(neighbours)):
         accuracy_train[i], accuracy_test[i], mean_absolute_error_train[i], mean_absolute_error_test[i] = run(
             neighbours[i])
+
     plt.xlabel('Neighbours')
     plt.ylabel('mean average error')
     plt.plot(neighbours, mean_absolute_error_train, label='train')
