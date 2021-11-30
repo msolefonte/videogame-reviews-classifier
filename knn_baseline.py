@@ -43,16 +43,15 @@ def run(neighbours):
 
     accuracy_train = average(accuracy_train)
     accuracy_test = average(accuracy_test)
-    mean_absolute_error_test= average(mean_absolute_error_test)
-    mean_absolute_error_test= average(mean_absolute_error_train)
+    mean_absolute_error_test = average(mean_absolute_error_test)
+    mean_absolute_error_train = average(mean_absolute_error_train)
 
     print(f'Training accuracy={accuracy_train} \n Test Accuracy={accuracy_test}')
     print(f'Mean Square Error Training={mean_absolute_error_train} \n Mean Square Error Test={mean_absolute_error_test}')
 
-
     plt.xlabel('score')
     plt.ylabel('Number of reviews')
-    
+
     distribution = calculate_distribution(y_pred)
     bar_range = np.array(range(len(distribution)))
     plt.bar(bar_range - 0.35 / 2, distribution, width=0.35,
@@ -66,18 +65,27 @@ def run(neighbours):
     plt.savefig(f'images/knn_{neighbours}.jpg')
     plt.clf()
 
-    print(accuracy_train, accuracy_test)
-    return accuracy_train, accuracy_test
+    print(accuracy_train, accuracy_test, mean_absolute_error_train, mean_absolute_error_test)
+    return accuracy_train, accuracy_test, mean_absolute_error_train, mean_absolute_error_test
 
 
 def main():
     neighbours = [10, 20, 30, 50, 70]
-    accuracy_train = [0.0]*len(neighbours)
-    accuracy_test = [0.0]*len(neighbours)
-    
+    accuracy_train = [0.0] * len(neighbours)
+    accuracy_test = [0.0] * len(neighbours)
+    mean_absolute_error_train= [0.0] * len(neighbours)
+    mean_absolute_error_test =[0.0] * len(neighbours)
+
     for i in range(len(neighbours)):
-        accuracy_train[i], accuracy_test[i] = run(
+        accuracy_train[i], accuracy_test[i], mean_absolute_error_train[i], mean_absolute_error_test[i] = run(
             neighbours[i])
+    plt.xlabel('Neighbours')
+    plt.ylabel('mean average error')
+    plt.plot(neighbours, mean_absolute_error_train, label='train')
+    plt.plot(neighbours, mean_absolute_error_test, label='test')
+    plt.legend()
+    plt.savefig('images/knn_vs_mean_average_error.jpg')
+    plt.clf()
 
     plt.xlabel('Neighbours')
     plt.ylabel('Accuracy')
