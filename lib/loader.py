@@ -24,15 +24,31 @@ def get_data():
 
     x = np.array(dataset.iloc[:, 1])
     y = np.array(dataset.iloc[:, 0])
-
+    
     vectorizer = CountVectorizer()
     preprocessed_x = [' '.join([preprocess_word(word, snowball_stemmer) for word in review.split(' ')]) for review in x]
     x_train_counts = vectorizer.fit_transform(preprocessed_x)
-
+    
     tfidf_transformer = TfidfTransformer()
     x_train_tfidf = tfidf_transformer.fit_transform(x_train_counts)
-
+    
     return x_train_tfidf.toarray(), y, vectorizer.get_feature_names()
+
+def get_data_for_tokenization():
+    snowball_stemmer = SnowballStemmer('english')
+
+    data_file_path = '../data/dataset.ml'
+    data_absolute_path = os.path.join(
+        os.path.dirname(__file__), data_file_path)
+    data_file = open(data_absolute_path, 'rb')
+
+    dataset = pickle.load(data_file)
+
+    x = np.array(dataset.iloc[:, 1])
+    y = np.array(dataset.iloc[:, 0])
+    preprocessed_x = [' '.join([preprocess_word(word, snowball_stemmer) for word in review.split(' ')]) for review in x]
+    
+    return x,y
 
 
 def get_train_test_split_data():
