@@ -3,8 +3,19 @@ import matplotlib.pyplot as plt
 from lib.loader import get_data
 from lib.utils.common import calculate_distribution
 from sklearn.model_selection import KFold
-from sklearn.metrics import accuracy_score, mean_absolute_error
+from sklearn.metrics import mean_absolute_error
 from sklearn.svm import LinearSVC
+
+# Formatting
+
+plt.rc('font', size=14)
+plt.rc('axes', titlesize=12)
+plt.rc('axes', labelsize=18)
+plt.rc('xtick', labelsize=14)
+plt.rc('ytick', labelsize=14)
+plt.rc('legend', fontsize=12)
+plt.rcParams['figure.constrained_layout.use'] = True
+
 
 x, y, names = get_data()
 kFold = KFold()
@@ -50,12 +61,12 @@ def run_model(c, draw_plot=False):
         plt.savefig('images/svm_c=%g.jpg' % c)
         plt.clf()
 
-    print(mean_average_error_train, mean_average_error_test)
+    print(c, mean_average_error_train, mean_average_error_test)
     return mean_average_error_train, mean_average_error_test
 
 
 def main():
-    c_range = [0.001, 0.01, 0.1, 1, 10, 100]
+    c_range = [0.001, 0.01, 0.03, 0.05, 0.08, 0.1, 0.3, 0.5, 0.8, 1]
 
     mean_average_error_train = np.zeros_like(c_range)
     mean_average_error_test = np.zeros_like(c_range)
