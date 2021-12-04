@@ -4,7 +4,7 @@ from lib.loader import get_data
 from lib.utils.common import calculate_distribution
 from sklearn.model_selection import KFold
 from sklearn.metrics import mean_absolute_error
-from sklearn.svm import LinearSVC
+from sklearn.svm import SVR
 
 # Formatting
 
@@ -22,7 +22,7 @@ kFold = KFold()
 
 
 def run_model(c, draw_plot=False):
-    model = LinearSVC(C=c)
+    model = SVR(C=c)
 
     mean_average_error_train = 0
     mean_average_error_test = 0
