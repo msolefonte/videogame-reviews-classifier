@@ -7,6 +7,17 @@ from sklearn.neighbors import KNeighborsClassifier
 from lib.loader import get_data
 from lib.utils.common import calculate_distribution
 
+# Formatting
+
+plt.rc('font', size=14)
+plt.rc('axes', titlesize=12)
+plt.rc('axes', labelsize=18)
+plt.rc('xtick', labelsize=14)
+plt.rc('ytick', labelsize=14)
+plt.rc('legend', fontsize=12)
+plt.rcParams['figure.constrained_layout.use'] = True
+
+
 x, y, names = get_data()
 folds = 5
 kf = KFold(folds)

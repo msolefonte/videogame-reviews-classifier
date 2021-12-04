@@ -6,6 +6,17 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import KFold
 from sklearn.metrics import accuracy_score, mean_absolute_error
 
+# Formatting
+
+plt.rc('font', size=14)
+plt.rc('axes', titlesize=12)
+plt.rc('axes', labelsize=18)
+plt.rc('xtick', labelsize=14)
+plt.rc('ytick', labelsize=14)
+plt.rc('legend', fontsize=12)
+plt.rcParams['figure.constrained_layout.use'] = True
+
+
 x, y, names = get_data()
 kFold = KFold()
 
