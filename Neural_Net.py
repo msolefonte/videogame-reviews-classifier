@@ -35,7 +35,7 @@ def plot_history(history):
     plt.plot(x, val_loss, 'r', label='Validation loss')
     plt.title('Training and validation loss')
     plt.legend()
-    plt.savefig('NeuralNet_vs_MAE.jpg')
+    plt.savefig('neural-net_vs_MAE.jpg')
     plt.clf()
 
 def run():
