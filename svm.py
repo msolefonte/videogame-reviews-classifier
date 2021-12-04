@@ -15,8 +15,6 @@ def run_model(c, draw_plot=False):
 
     mean_average_error_train = 0
     mean_average_error_test = 0
-    accuracy_train = 0
-    accuracy_test = 0
 
     for train_idx, test_idx in kFold.split(x):
         x_train = x[train_idx]
@@ -28,17 +26,12 @@ def run_model(c, draw_plot=False):
 
         y_pred = model.predict(x_train)
         mean_average_error_train = mean_average_error_train + mean_absolute_error(y_pred, y_train)
-        accuracy_train += accuracy_score(y_pred, y_train)
 
         y_pred = model.predict(x_test)
         mean_average_error_test = mean_average_error_test + mean_absolute_error(y_pred, y_test)
-        accuracy_test += accuracy_score(y_pred, y_test)
 
     mean_average_error_train = mean_average_error_train / 5
-    mean_accuracy_train = accuracy_train / 5
-
     mean_average_error_test = mean_average_error_test / 5
-    mean_accuracy_test = accuracy_test / 5
 
     if draw_plot:
         plt.xlabel('score')
@@ -57,8 +50,8 @@ def run_model(c, draw_plot=False):
         plt.savefig('images/svm_c=%g.jpg' % c)
         plt.clf()
 
-    print(mean_average_error_train, mean_accuracy_train, mean_average_error_test, mean_accuracy_test)
-    return mean_average_error_train, mean_accuracy_train, mean_average_error_test, mean_accuracy_test
+    print(mean_average_error_train, mean_average_error_test)
+    return mean_average_error_train, mean_average_error_test
 
 
 def main():
@@ -66,12 +59,9 @@ def main():
 
     mean_average_error_train = np.zeros_like(c_range)
     mean_average_error_test = np.zeros_like(c_range)
-    accuracy_train = np.zeros_like(c_range)
-    accuracy_test = np.zeros_like(c_range)
 
     for i in range(len(c_range)):
-        mean_average_error_train[i], accuracy_train[i], mean_average_error_test[i], accuracy_test[i] = \
-            run_model(c_range[i], True)
+        mean_average_error_train[i], mean_average_error_test[i] = run_model(c_range[i], True)
 
     plt.xlabel('c')
     plt.ylabel('mean average error')
@@ -79,14 +69,6 @@ def main():
     plt.plot(c_range, mean_average_error_test, label='test')
     plt.legend()
     plt.savefig('images/svm_c_vs_mean_average_error.jpg')
-    plt.clf()
-
-    plt.xlabel('c')
-    plt.ylabel('acc')
-    plt.plot(c_range, accuracy_train, label='train')
-    plt.plot(c_range, accuracy_test, label='test')
-    plt.legend()
-    plt.savefig('images/svm_c_vs_acc.jpg')
     plt.clf()
 
 
