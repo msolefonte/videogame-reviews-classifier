@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import accuracy_score, mean_absolute_error, confusion_matrix, classification_report
 from sklearn.model_selection import KFold
-from sklearn.neighbors import KNeighborsClassifier
+from sklearn.neighbors import KNeighborsRegressor
 from lib.loader import get_data
 from lib.utils.common import calculate_distribution
 
@@ -28,7 +28,7 @@ def average(sum):
 
 
 def run(neighbours):
-    knn_neighbours = KNeighborsClassifier(n_neighbors=neighbours)
+    knn_neighbours = KNeighborsRegressor(n_neighbors=neighbours, weights='distance')
 
     mean_absolute_error_train = 0
     accuracy_train = 0
@@ -46,25 +46,13 @@ def run(neighbours):
         # print(y_pred)
         mean_absolute_error_train = mean_absolute_error_train + \
             mean_absolute_error(y_pred, y_train)
-        accuracy_train = accuracy_train + accuracy_score(y_pred, y_train)
+        accuracy_train= accuracy_train + knn_neighbours.score(x_train,y_train)
 
         y_pred = knn_neighbours.predict(x_test)
-        # print(y_pred)
-
-        # Print out classification report and confusion matrix
-
-        report = classification_report(y_test, y_pred, output_dict=True)
-        report_df = pd.DataFrame(report).transpose()
-        report_df.to_csv(
-            f'Classification_report/knn_Classification_report_n={neighbours}.csv', index=True)
-        print(classification_report(y_test, y_pred))
-        confusion_mat = confusion_matrix(y_test, y_pred)
-        print("Confusion Matrix \n", confusion_mat)
-        print(confusion_mat.shape)
 
         mean_absolute_error_test = mean_absolute_error_test + \
             mean_absolute_error(y_pred, y_test)
-        accuracy_test = accuracy_test + accuracy_score(y_pred, y_test)
+        accuracy_test= accuracy_train + knn_neighbours.score(x_test,y_test)
 
     accuracy_train = average(accuracy_train)
     accuracy_test = average(accuracy_test)
@@ -74,7 +62,7 @@ def run(neighbours):
     print(
         f'Training accuracy={accuracy_train} \n Test Accuracy={accuracy_test}')
     print(
-        f'Mean Square Error Training={mean_absolute_error_train} \n Mean Square Error Test={mean_absolute_error_test}')
+        f'Mean Absolute Error Training={mean_absolute_error_train} \n Mean Absolute Error Test={mean_absolute_error_test}')
 
     plt.xlabel('score')
     plt.ylabel('Number of reviews')
@@ -98,7 +86,7 @@ def run(neighbours):
 
 
 def main():
-    neighbours = [10, 20, 30, 50, 70]
+    neighbours = [10, 20, 30, 50, 65, 70]
     accuracy_train = [0.0] * len(neighbours)
     accuracy_test = [0.0] * len(neighbours)
     mean_absolute_error_train = [0.0] * len(neighbours)
@@ -117,11 +105,11 @@ def main():
     plt.clf()
 
     plt.xlabel('Neighbours')
-    plt.ylabel('Accuracy')
+    plt.ylabel('Score')
     plt.plot(neighbours, accuracy_train, label='train')
     plt.plot(neighbours, accuracy_test, label='test')
     plt.legend()
-    plt.savefig('images/knn_vs_accuracy.jpg')
+    plt.savefig('images/knn_vs_score.jpg')
     plt.clf()
 
 
