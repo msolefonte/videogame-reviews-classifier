@@ -10,32 +10,53 @@ from sklearn.model_selection import train_test_split
 
 x, y, names = get_data()
 
+plt.style.use('ggplot')
+
+
+def plot_history(history):
+    acc = history.history['mse']
+    loss = history.history['loss']
+    val_loss = history.history['val_loss']
+    x = range(1, len(acc) + 1)
+
+    plt.figure(figsize=(12, 5))
+    plt.xlabel('Input')
+    plt.ylabel('Mean Absolute Error')
+    plt.plot(x, loss, 'b', label='Training loss')
+    plt.plot(x, val_loss, 'r', label='Validation loss')
+    plt.title('Training and validation loss')
+    plt.legend()
+    plt.savefig('images/NeuralNet_vs_MAE.jpg')
+    plt.clf()
+
+
 x_train, x_test, y_train, y_test = train_test_split(
-    x, y, test_size=0.25, random_state=0)
+    x, y, test_size=0.25, random_state=1000)
 
 input_dim = x_train.shape[1]
 
 nn_model = Sequential()
 nn_model.add(layers.Dense(10, input_dim=input_dim, activation='relu'))
-nn_model.add(layers.Dense(1, activation='sigmoid'))
+nn_model.add(layers.Dense(1, activation='relu'))
 nn_model.compile(optimizer='adam',
-                 loss='binary_crossentropy',
-                 metrics=['accuracy'])
+                 loss='mse',
+                 metrics=['mse'])
 nn_model.summary()
 
-nn_model.fit(x_train, y_train,
-             epochs=20,
-             verbose=False,
-             validation_data=(x_test, y_test),
-             batch_size=10)
-loss, accuracy = nn_model.evaluate(x_train, y_train, verbose=False)
+model = nn_model.fit(x_train, y_train,
+                     epochs=20,
+                     verbose=False,
+                     validation_data=(x_test, y_test),
+                     batch_size=10)
 
+loss, accuracy = nn_model.evaluate(x_train, y_train, verbose=False)
 print("Training Accuracy: {:.4f}".format(accuracy))
 print("Training Loss: {:.4f}".format(loss))
+
 loss, accuracy = nn_model.evaluate(x_test, y_test, verbose=False)
 print("Testing Accuracy:  {:.4f}".format(accuracy))
 print("Testing Loss:  {:.4f}".format(loss))
-
+plot_history(model)
 
 
 '''
