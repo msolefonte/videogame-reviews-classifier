@@ -48,12 +48,12 @@ def run_model(c, draw_plot=False):
         plt.xlabel('score')
         plt.ylabel('number of reviews')
 
-        distribution = calculate_distribution(y_pred)
+        distribution, xticklables = calculate_distribution(y_pred)
         bar_range = np.array(range(len(distribution)))
         plt.bar(bar_range-0.35/2, distribution, width=0.35,
                 label='Predicted', tick_label=range(len(distribution)))
 
-        distribution = calculate_distribution(y_test)
+        distribution, xticklables = calculate_distribution(y_test)
         plt.bar(bar_range+0.35/2, distribution, width=0.35,
                 label='Real', tick_label=range(len(distribution)))
 
