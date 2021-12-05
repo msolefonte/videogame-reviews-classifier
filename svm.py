@@ -4,7 +4,7 @@ from lib.loader import get_data
 from lib.utils.common import calculate_distribution
 from sklearn.model_selection import KFold
 from sklearn.metrics import mean_absolute_error
-from sklearn.svm import LinearSVC
+from sklearn.svm import LinearSVR
 
 # Formatting
 
@@ -22,7 +22,7 @@ kFold = KFold()
 
 
 def run_model(c, draw_plot=False):
-    model = LinearSVC(C=c)
+    model = LinearSVR(C=c)
 
     mean_average_error_train = 0
     mean_average_error_test = 0
@@ -46,27 +46,31 @@ def run_model(c, draw_plot=False):
 
     if draw_plot:
         plt.xlabel('score')
-        plt.ylabel('count of score')
+        plt.ylabel('number of reviews')
 
         distribution = calculate_distribution(y_pred)
         bar_range = np.array(range(len(distribution)))
         plt.bar(bar_range-0.35/2, distribution, width=0.35,
-                label='train', tick_label=range(len(distribution)))
+                label='Predicted', tick_label=range(len(distribution)))
 
         distribution = calculate_distribution(y_test)
         plt.bar(bar_range+0.35/2, distribution, width=0.35,
-                label='test', tick_label=range(len(distribution)))
+                label='Real', tick_label=range(len(distribution)))
 
         plt.legend()
         plt.savefig('images/svm_c=%g.jpg' % c)
         plt.clf()
 
+    # Only print this for the best c (we already know it is 8)
+    if c == 8:
+        ind = np.argpartition(np.absolute(model.coef_), -20)[-20:]
+        print(np.stack([np.array(names)[ind], np.array(model.coef_)[ind]], axis=1))
     print(c, mean_average_error_train, mean_average_error_test)
     return mean_average_error_train, mean_average_error_test
 
 
 def main():
-    c_range = [0.001, 0.01, 0.03, 0.05, 0.08, 0.1, 0.3, 0.5, 0.8, 1]
+    c_range = [0.001, 0.01, 0.1, 0.3, 0.5, 0.8, 1, 3, 5, 8, 10, 30, 50]
 
     mean_average_error_train = np.zeros_like(c_range)
     mean_average_error_test = np.zeros_like(c_range)
