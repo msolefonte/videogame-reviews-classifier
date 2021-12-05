@@ -44,7 +44,7 @@ def run(neighbours):
         knn_neighbours.fit(x_train, y_train)
 
         y_pred = knn_neighbours.predict(x_train)
-        # print(y_pred)
+
         mean_absolute_error_train = mean_absolute_error_train + \
             mean_absolute_error(y_pred, y_train)
         score_train = score_train + \
@@ -77,11 +77,11 @@ def run(neighbours):
     distribution, xticklables = calculate_distribution(y_test)
     plt.bar(bar_range+0.35/2, distribution, width=0.35,
             label='Real', tick_label=range(len(distribution)))
-    
+
     plt.xticks(bar_range, xticklables)
     plt.legend()
 
-    plt.savefig(f'images/knn_{neighbours}.jpg')
+    plt.savefig(f'images/knn_distance_{neighbours}.jpg')
     plt.clf()
 
     print(score_train, score_test,
@@ -105,7 +105,7 @@ def main():
     plt.plot(neighbours, mean_absolute_error_train, label='train')
     plt.plot(neighbours, mean_absolute_error_test, label='test')
     plt.legend()
-    plt.savefig('images/knn_vs_mean_average_error.jpg')
+    plt.savefig('images/knn_distance_vs_mean_average_error.jpg')
     plt.clf()
 
     plt.xlabel('Neighbours')
@@ -113,7 +113,7 @@ def main():
     plt.plot(neighbours, score_train, label='train')
     plt.plot(neighbours, score_test, label='test')
     plt.legend()
-    plt.savefig('images/knn_vs_score.jpg')
+    plt.savefig('images/knn_distance_vs_score.jpg')
     plt.clf()
 
 
