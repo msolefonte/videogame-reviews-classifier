@@ -1,10 +1,14 @@
+from math import pi
+import pickle
+import os
 import numpy as np
 import matplotlib.pyplot as plt
+from numpy.lib.npyio import save
 from lib.loader import get_data
 from lib.utils.common import calculate_distribution
-from sklearn.naive_bayes import MultinomialNB
+from sklearn.linear_model import BayesianRidge
 from sklearn.model_selection import KFold
-from sklearn.metrics import accuracy_score, mean_absolute_error
+from sklearn.metrics import mean_absolute_error
 
 # Formatting
 
@@ -20,13 +24,12 @@ x, y, names = get_data()
 kFold = KFold()
 
 
-def run_model(alpha, draw_plot=False):
-    model = MultinomialNB(alpha=alpha)
+def run_model(alpha_1=1e-6, alpha_2=1e-6, lambda_1=1e-6, lambda_2=1e-6, draw_plot=False):
+    model = BayesianRidge(alpha_1=alpha_1, alpha_2=alpha_2,
+                          lambda_1=lambda_1, lambda_2=lambda_2)
 
     mean_average_error_train = 0
     mean_average_error_test = 0
-    accuracy_train = 0
-    accuracy_test = 0
 
     for train_idx, test_idx in kFold.split(x):
         x_train = x[train_idx]
@@ -37,72 +40,108 @@ def run_model(alpha, draw_plot=False):
         model.fit(x_train, y_train)
 
         y_pred = model.predict(x_train)
-        mean_average_error_train = mean_average_error_train + mean_absolute_error(y_pred, y_train)
-        accuracy_train = accuracy_train + accuracy_score(y_pred, y_train)
+        mean_average_error_train = mean_average_error_train + \
+            mean_absolute_error(y_pred, y_train)
 
         y_pred = model.predict(x_test)
-        mean_average_error_test = mean_average_error_test + mean_absolute_error(y_pred, y_test)
-        accuracy_test = accuracy_test + accuracy_score(y_pred, y_test)
+        mean_average_error_test = mean_average_error_test + \
+            mean_absolute_error(y_pred, y_test)
 
     mean_average_error_train = mean_average_error_train / 5
-    mean_accuracy_train = accuracy_train / 5
-
     mean_average_error_test = mean_average_error_test / 5
-    mean_accuracy_test = accuracy_test / 5
 
     if draw_plot:
         plt.xlabel('score')
-        plt.ylabel('count of score')
+        plt.ylabel('number of reviews')
 
-        distribution = calculate_distribution(y_pred)
+        distribution, xticklables = calculate_distribution(y_pred)
         bar_range = np.array(range(len(distribution)))
-        plt.bar(bar_range-0.35/2, distribution, width=0.35,
-                label='train', tick_label=range(len(distribution)))
+        plt.bar(bar_range-0.35/2, distribution, width=0.35, label='Real')
 
-        distribution = calculate_distribution(y_test)
-        plt.bar(bar_range+0.35/2, distribution, width=0.35,
-                label='test', tick_label=range(len(distribution)))
+        distribution, xticklables = calculate_distribution(y_test)
+        bar_range = np.array(range(len(distribution)))
+        plt.bar(bar_range+0.35/2, distribution, width=0.35, label='Prediction')
 
+        plt.xticks(bar_range, xticklables)
         plt.legend()
-        plt.savefig('images/bayes_alpha=%g.jpg' % alpha)
+
+        plt.savefig('images/bayes.jpg')
         plt.clf()
 
-    return mean_average_error_train, mean_accuracy_train, mean_average_error_test, mean_accuracy_test
+
+    return mean_average_error_train, mean_average_error_test
 
 
 def main():
-    run_model(0, True)
-    run_model(0.02, True)
-    run_model(0.5, True)
-    run_model(1, True)
-    run_model(10, True)
-    run_model(100, True)
+    # alpha 1
+    alpha_1 = np.linspace(0, 100)
+    mean_average_error_train = np.zeros_like(alpha_1)
+    mean_average_error_test = np.zeros_like(alpha_1)
 
-    alpha = np.linspace(0, 100)
-    mean_average_error_train = np.zeros_like(alpha)
-    mean_average_error_test = np.zeros_like(alpha)
-    accuracy_train = np.zeros_like(alpha)
-    accuracy_test = np.zeros_like(alpha)
+    for i in range(len(alpha_1)):
+        mean_average_error_train[i], mean_average_error_test[i] = \
+            run_model(alpha_1=alpha_1[i])
 
-    for i in range(len(alpha)):
-        mean_average_error_train[i], accuracy_train[i], mean_average_error_test[i], accuracy_test[i] = \
-            run_model(alpha[i])
-
-    plt.xlabel('alpha')
+    plt.xlabel('alpha_1')
     plt.ylabel('mean average error')
-    plt.plot(alpha, mean_average_error_train, label='train')
-    plt.plot(alpha, mean_average_error_test, label='test')
+    plt.plot(alpha_1, mean_average_error_train, label='train')
+    plt.plot(alpha_1, mean_average_error_test, label='test')
     plt.legend()
-    plt.savefig('images/bayes_alpha_vs_mean_average_error.jpg')
+    plt.savefig('images/bayes_alpha_1_vs_mean_average_error.jpg')
     plt.clf()
 
-    plt.xlabel('alpha')
-    plt.ylabel('acc')
-    plt.plot(alpha, accuracy_train, label='train')
-    plt.plot(alpha, accuracy_test, label='test')
+    # alpha 2
+    alpha_2 = np.linspace(0, 100)
+    mean_average_error_train = np.zeros_like(alpha_2)
+    mean_average_error_test = np.zeros_like(alpha_2)
+
+    for i in range(len(alpha_2)):
+        mean_average_error_train[i], mean_average_error_test[i] = \
+            run_model(alpha_2=alpha_2[i])
+
+    plt.xlabel('alpha_2')
+    plt.ylabel('mean average error')
+    plt.plot(alpha_2, mean_average_error_train, label='train')
+    plt.plot(alpha_2, mean_average_error_test, label='test')
     plt.legend()
-    plt.savefig('images/bayes_alpha_vs_acc.jpg')
+    plt.savefig('images/bayes_alpha_2_vs_mean_average_error.jpg')
     plt.clf()
+
+    # lambda 1
+    lambda_1 = np.linspace(0, 100)
+    mean_average_error_train = np.zeros_like(lambda_1)
+    mean_average_error_test = np.zeros_like(lambda_1)
+
+    for i in range(len(lambda_1)):
+        mean_average_error_train[i], mean_average_error_test[i] = \
+            run_model(lambda_1[i])
+
+    plt.xlabel('lambda_1')
+    plt.ylabel('mean average error')
+    plt.plot(lambda_1, mean_average_error_train, label='train')
+    plt.plot(lambda_1, mean_average_error_test, label='test')
+    plt.legend()
+    plt.savefig('images/bayes_lambda_1_vs_mean_average_error.jpg')
+    plt.clf()
+
+    # lambda 2
+    lambda_2 = np.linspace(0, 100)
+    mean_average_error_train = np.zeros_like(lambda_2)
+    mean_average_error_test = np.zeros_like(lambda_2)
+
+    for i in range(len(lambda_2)):
+        mean_average_error_train[i], mean_average_error_test[i] = \
+            run_model(lambda_2[i])
+
+    plt.xlabel('lambda_2')
+    plt.ylabel('mean average error')
+    plt.plot(lambda_2, mean_average_error_train, label='train')
+    plt.plot(lambda_2, mean_average_error_test, label='test')
+    plt.legend()
+    plt.savefig('images/bayes_lambda_2_vs_mean_average_error.jpg')
+    plt.clf()
+
+    run_model(draw_plot=True)
 
 
 if __name__ == "__main__":
