@@ -14,15 +14,16 @@ plt.rc('legend', fontsize=12)
 plt.rcParams['figure.constrained_layout.use'] = True
 
 
-x, y, names = get_data()
+x, y, _ = get_data()
 
-plt.xlabel('Rating')
+plt.xlabel('Ratings')
 plt.ylabel('Number of reviews')
-distribution = calculate_distribution(y)
+distribution, xticks = calculate_distribution(y)
 bar_range = np.array(range(len(distribution)))
 plt.bar(bar_range - 0.35 / 2, distribution, width=0.35,
         label='Input Data', tick_label=range(len(distribution)))
 
+plt.xticks(bar_range, xticks)
 plt.legend()
 plt.savefig(f'images/input_data_distribution.jpg')
 plt.clf

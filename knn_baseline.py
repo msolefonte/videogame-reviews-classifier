@@ -77,8 +77,10 @@ def run(neighbours):
     distribution, xticklables = calculate_distribution(y_test)
     plt.bar(bar_range+0.35/2, distribution, width=0.35,
             label='Real', tick_label=range(len(distribution)))
-
+    
+    plt.xticks(bar_range, xticklables)
     plt.legend()
+
     plt.savefig(f'images/knn_{neighbours}.jpg')
     plt.clf()
 
