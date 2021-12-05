@@ -2,9 +2,23 @@ import numpy as np
 
 
 def calculate_distribution(y):
-    dis = np.zeros(11, np.int)
+    dis = np.zeros(5, int)
+
+    xticklables = [
+        '0-19', '20-49', '50-74', '75-89', '90-100'
+    ]
 
     for value in y:
-        dis[int((value - 1)/10)] = dis[int((value - 1)/10)] + 1
+        if (value - 1) >= 90:
+            tag = 4
+        elif (value - 1) >= 75:
+            tag = 3
+        elif (value - 1) >= 50:
+            tag = 2
+        elif (value - 1) >= 20:
+            tag = 1
+        else:
+            tag = 0
+        dis[tag] = dis[tag] + 1
 
-    return dis
+    return dis, xticklables
